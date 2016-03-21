@@ -2,6 +2,8 @@ function appViewModel() {
 
   var self = this;
   var map, city, infowindow;
+  //api for songkick
+  var songkickApi = 'KrsaEhuwC3Y3T21B';
 
   var concertLocations = [];
   var concertMarkers = [];
@@ -40,18 +42,68 @@ function appViewModel() {
         map.setCenter(center);
       });
 
+      //pass info from initial objects and api into this area later to setup mvvm
+      var myLatLng = {lat: 40.765353, lng: -73.979924};
+      var marker = new google.maps.Marker({
+        draggable: true,
+        position: myLatLng,
+        animation: google.maps.Animation.DROP,
+        map: map,
+        title: 'Hello World!'
+      });
+      //listener that opens window and bounces marker when clicked
+      marker.addListener('click', function() {
+        toggleBounce;
+        infowindow.open(map, marker);
+      });
+
+      //adds animation if you click the marker
+
+      function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
+
       infowindow = new google.maps.InfoWindow({maxWidth: 300});
       //put in data from songkick marker function here
     }
 
     //uses SongKick API to grab concerts
     function getConcerts(location) {
-      var songkickUrl = 'http://api.songkick.com/api/3.0/';
+      var loc = location;
+      var songKickUrl = 'http://api.songkick.com/api/3.0/events.json?apikey=' + songkickApi + '&location=geo:' + 40.765353 + ',' + -73.979924 +  '&jsoncallback=?';
       //need to add link back to display name on main map
+      //console.log(this.currentLng);
 
-    }
+      $.ajax({
+        url: songKickUrl,
+        dataType: 'jsonp',
+        // jsonp "callback",
+        success: function( data ) {
+          console.log(data);
+          var concerts = data.resultsPage.results.event;
+          console.log(data.resultsPage.results.event[1]);
+          for (var i = 0; i < concerts.length; i++) {
+            var concert = concerts[i];
+            console.log(concert);
+
+          //articleStr = articleList[i];
+          //var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+          //$wikiElem.append('<li><a href="' + url + '">' +
+          //  articleStr + '</a></li>');
+          };
+
+        //clearTimeout(wikiRequestTimeout);
+        }
+      });
 
 
+  }
+
+  getConcerts('New York, NY');
   initMap();
 
 }
