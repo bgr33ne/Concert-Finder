@@ -4,7 +4,7 @@ html, body {
         padding: 0;
 }
 
-#map {
+#map-canvas {
   height: 93vh;
   width: 100%
   position: relative;
