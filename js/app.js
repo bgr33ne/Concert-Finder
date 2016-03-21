@@ -8,6 +8,13 @@ function appViewModel() {
   var concertLocations = [];
   var concertMarkers = [];
 
+
+  this.mapMarkers = ko.observableArray([]);
+
+  //binding for search input, status and location
+  this.searchStatus = ko.observable();
+  this.searchLocation = ko.observable('New York, NY');
+
   //holds lat + lng
   this.currentLat = ko.observable(40.765353);
   this.currentLng = ko.observable(-73.979924);
@@ -69,11 +76,13 @@ function appViewModel() {
 
       infowindow = new google.maps.InfoWindow({maxWidth: 300});
       //put in data from songkick marker function here
+      getConcerts('New York, NY');
     }
 
     //uses SongKick API to grab concerts
     function getConcerts(location) {
       var loc = location;
+      //added a 1-week time filter
       var songKickUrl = 'http://api.songkick.com/api/3.0/events.json?apikey=' + songkickApi + '&location=geo:' + 40.765353 + ',' + -73.979924 +  '&jsoncallback=?';
       //need to add link back to display name on main map
       //console.log(this.currentLng);
@@ -86,9 +95,10 @@ function appViewModel() {
           console.log(data);
           var concerts = data.resultsPage.results.event;
           console.log(data.resultsPage.results.event[1]);
+            console.log('Number of concerts: ' + concerts.length);
           for (var i = 0; i < concerts.length; i++) {
             var concert = concerts[i];
-            console.log(concert);
+            //console.log(concert);
 
           //articleStr = articleList[i];
           //var url = 'http://en.wikipedia.org/wiki/' + articleStr;
@@ -101,9 +111,31 @@ function appViewModel() {
       });
 
 
+      //creates loads map markers and info windows on the mapfrom API
+      //need to replace conertlat concert lon with values from jsonp songkick
+      function addMapMarkers(array) {
+        $.each(array, function(index, value) {
+        var lat = value.location.lng,
+            lon = value.location.lon,
+            geoLoc = new google.maps.LatLng(lat, lon),
+            thisArtist = value.performance.artist.displayName;
+        });
+
+        var contentString = '<div id="infowindow">' +
+        '<h3>' + value.performance.artist.displayName + '</h3>' +
+        '<p>all the magical info about this artist' + '</p>' + '</div>';
+
+        var marker = new google.maps.Marker({
+            position: geoLoc,
+            title: thisConcert,
+            map: map
+        });
+      }
+
+
   }
 
-  getConcerts('New York, NY');
+
   initMap();
 
 }
