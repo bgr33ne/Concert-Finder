@@ -5,10 +5,13 @@ function appViewModel() {
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
 
+  var concertArtist = [];
   var concertLocations = [];
   var concertMarkers = [];
+  //pushing data from songkick into this array
+  var currentConcerts = [];
 
-
+  //holds all mapmarkers
   this.mapMarkers = ko.observableArray([]);
 
   //binding for search input, status and location
@@ -77,6 +80,10 @@ function appViewModel() {
       infowindow = new google.maps.InfoWindow({maxWidth: 300});
       //put in data from songkick marker function here
       getConcerts('New York, NY');
+      //calls the loadmarker function inputting the concertLocations array
+      loadMarkers(concertLocations);
+      //testing to see if data was pushed into array
+      //console.log('Current concerts array: ' + currentConcerts);
     }
 
     //uses SongKick API to grab concerts
@@ -94,22 +101,49 @@ function appViewModel() {
         success: function( data ) {
           console.log(data);
           var concerts = data.resultsPage.results.event;
+          //var concertLoc = data.resultsPage.results.event.location;
+        //  console.log(data.resultsPage.results.event.Object.location);
           console.log(data.resultsPage.results.event[1]);
+          console.log(data.resultsPage.results.event[1].displayName);
+          console.log(data.resultsPage.results.event[1].location);
             console.log('Number of concerts: ' + concerts.length);
           for (var i = 0; i < concerts.length; i++) {
             var concert = concerts[i];
-            //console.log(concert);
+            concertLocations.push[concert.location];
+            console.log('concert location: ' + concert.location);
+            concertArtist.push[concert.displayName];
+            console.log('concert artist: ' + concert.displayName);
 
-          //articleStr = articleList[i];
-          //var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-          //$wikiElem.append('<li><a href="' + url + '">' +
-          //  articleStr + '</a></li>');
+
           };
-
         //clearTimeout(wikiRequestTimeout);
         }
       });
 
+
+      //function to add marker to map from an input of an array
+      function loadMarkers(array) {
+          $.each(array, function(index, value)) {
+            var currentLat = value.lat,
+                currentLon = value.lon,
+                geoLoc = new google.maps.LatLng(currentLat, currentLon),
+                currentVenue = value.venue;
+
+            var contentString = '<div>' + 'Generic Content' + '</div>';
+
+
+
+            var marker = new google.maps.Marker({
+              position: geoLoc,
+              title: currentVenue,
+              map: map
+            });
+            self.mapMarkers.push({
+              marker: marker,
+              content: contentString
+            });
+          }
+      }
 
       //creates loads map markers and info windows on the mapfrom API
       //need to replace conertlat concert lon with values from jsonp songkick
