@@ -5,11 +5,8 @@ function appViewModel() {
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
 
-  var concertArtist = [];
-  var concertLocations = [];
-  var concertMarkers = [];
   //pushing data from songkick into this array
-  var currentConcerts = [];
+  this.currentConcerts = ko.observableArray([]);
 
   //holds all mapmarkers
   this.mapMarkers = ko.observableArray([]);
@@ -81,14 +78,15 @@ function appViewModel() {
       //put in data from songkick marker function here
       getConcerts('New York, NY');
       //calls the loadmarker function inputting the concertLocations array
-      loadMarkers(concertLocations);
-      //testing to see if data was pushed into array
-      //console.log('Current concerts array: ' + currentConcerts);
+      //console.log('Current concerts!!');
+      //console.log(currentConcerts[1]);
+      //addmapmarkers not working
+      mapMarkers(self.currentConcerts);
     }
 
     //uses SongKick API to grab concerts
     function getConcerts(location) {
-      var loc = location;
+      //var loc = location;
       //added a 1-week time filter
       var songKickUrl = 'http://api.songkick.com/api/3.0/events.json?apikey=' + songkickApi + '&location=geo:' + 40.765353 + ',' + -73.979924 +  '&jsoncallback=?';
       //need to add link back to display name on main map
@@ -101,62 +99,80 @@ function appViewModel() {
         success: function( data ) {
           console.log(data);
           var concerts = data.resultsPage.results.event;
+          var len = concerts.length;
           //var concertLoc = data.resultsPage.results.event.location;
-        //  console.log(data.resultsPage.results.event.Object.location);
-          console.log(data.resultsPage.results.event[1]);
-          console.log(data.resultsPage.results.event[1].displayName);
-          console.log(data.resultsPage.results.event[1].location);
-            console.log('Number of concerts: ' + concerts.length);
-          for (var i = 0; i < concerts.length; i++) {
-            var concert = concerts[i];
-            concertLocations.push[concert.location];
-            console.log('concert location: ' + concert.location);
-            concertArtist.push[concert.displayName];
-            console.log('concert artist: ' + concert.displayName);
+          //console.log(data.resultsPage.results.event.Object.location);
+          //console.log(data.resultsPage.results.event[1]);
+          //console.log(data.resultsPage.results.event[1].displayName);
+          //console.log(data.resultsPage.results.event[1].location);
+          console.log('Number of concerts: ' + len);
+          for (var i = 0; i < len; i++) {
+            var concertElem = data.resultsPage.results;
+            var concertVenue = concertElem.event[i].venue;
+            var artist = concertElem.event[i].displayName;
+            console.log('artist: ' + artist);
+            var url = concertElem.event[i].uri;
+            console.log('url: ' + url);
 
+            venueLat = concertVenue.lat;
+            console.log('lat: ' + concertVenue.lat);
+            venueLng = concertVenue.long;
+            console.log('lon: ' + concertVenue.lng);
+            venueName = concertVenue.displayName;
+            console.log('name: ' + concertVenue.displayName);
+            };
 
-          };
-        //clearTimeout(wikiRequestTimeout);
-        }
-      });
-
-
-      //function to add marker to map from an input of an array
-      function loadMarkers(array) {
-          $.each(array, function(index, value)) {
-            var currentLat = value.lat,
-                currentLon = value.lon,
-                geoLoc = new google.maps.LatLng(currentLat, currentLon),
-                currentVenue = value.venue;
-
-            var contentString = '<div>' + 'Generic Content' + '</div>';
-
-
-
-            var marker = new google.maps.Marker({
-              position: geoLoc,
-              title: currentVenue,
-              map: map
+            self.currentConcerts.push({
+              //these values passed into concertLocations array
+              concertLat: venueLat,
+              concertLng: venueLng,
+              concertVenueName: venueName,
+              concertArtist: artist,
+              concertUrl: url
             });
-            self.mapMarkers.push({
-              marker: marker,
-              content: contentString
-            });
+
+
           }
-      }
+        //clearTimeout(wikiRequestTimeout);
+      });
+    }
+
+
+    /*/function to add marker to map from an input of an array
+    function loadMarkers(array) {
+        $.each(array, function(index, value) {
+          var currentLat = value.lat;
+          var currentLon = value.lon;
+          var geoLoc = new google.maps.LatLng(currentLat, currentLon);
+          var currentVenue = value.venue;
+
+          var contentString = '<div>' + 'Generic Content' + '</div>';
+
+          var marker = new google.maps.Marker({
+            position: geoLoc,
+            title: currentVenue,
+            map: map
+          });
+          self.mapMarkers.push({
+            marker: marker,
+            content: contentString
+          });
+        });
+      }*/
 
       //creates loads map markers and info windows on the mapfrom API
       //need to replace conertlat concert lon with values from jsonp songkick
-      function addMapMarkers(array) {
+      //currently having an issue with value
+      function mapMarkers(array) {
         $.each(array, function(index, value) {
-        var lat = value.location.lng,
-            lon = value.location.lon,
-            geoLoc = new google.maps.LatLng(lat, lon),
-            thisArtist = value.performance.artist.displayName;
+        var lat = value.concertLat;
+        var lon = value.concertLng;
+        var geoLoc = new google.maps.LatLng(lat, lon);
+        var thisArtist = value.concertArtist;
         });
 
         var contentString = '<div id="infowindow">' +
-        '<h3>' + value.performance.artist.displayName + '</h3>' +
+        '<h3>' + value.concertUrl + '</h3>' +
         '<p>all the magical info about this artist' + '</p>' + '</div>';
 
         var marker = new google.maps.Marker({
@@ -165,10 +181,6 @@ function appViewModel() {
             map: map
         });
       }
-
-
-  }
-
 
   initMap();
 
