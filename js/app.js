@@ -1,7 +1,7 @@
 function appViewModel() {
 
   var self = this;
-  var map, city, infowindow;
+  var map, city, infoWindow;
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
 
@@ -18,9 +18,9 @@ function appViewModel() {
   this.searchStatus = ko.observable();
   this.searchLocation = ko.observable('New York, NY');
 
-  //holds lat + lng
-  //this.currentLat = ko.observable(40.765353);
-  //this.currentLng = ko.observable(-73.979924);
+  //holds lat + lng for switching cities
+  this.currentLat = ko.observable(40.765353);
+  this.currentLng = ko.observable(-73.979924);
 
 
   //map error handling
@@ -29,7 +29,9 @@ function appViewModel() {
   }, 8000);
 
   function initMap() {
-    city = new google.maps.LatLng(40.765353, -73.979924);
+    lat = self.currentLat();
+    lng = self.currentLng();
+    city = new google.maps.LatLng(lat, lng);
     map = new google.maps.Map(document.getElementById('map-canvas'), {
       center: city,
       zoom: 12,
@@ -44,48 +46,24 @@ function appViewModel() {
             mapTypeControl: false,
             panControl: false
           });
-      clearTimeout(self.mapRequestTimeout);
+    clearTimeout(self.mapRequestTimeout);
 
-      google.maps.event.addDomListener(window, "resize", function() {
-        var center = map.getCenter();
-        google.maps.event.trigger(map, "resize");
-        map.setCenter(center);
-      });
+    google.maps.event.addDomListener(window, "resize", function() {
+      var center = map.getCenter();
+      google.maps.event.trigger(map, "resize");
+      map.setCenter(center);
+    });
 
-      //pass info from initial objects and api into this area later to setup mvvm
-      var myLatLng = {lat: 40.765353, lng: -73.979924};
-      var marker = new google.maps.Marker({
-        draggable: true,
-        position: myLatLng,
-        animation: google.maps.Animation.DROP,
-        map: map,
-        title: 'Hello World!'
-      });
-      //listener that opens window and bounces marker when clicked
-      marker.addListener('click', function() {
-        toggleBounce;
-        infowindow.open(map, marker);
-      });
+    infoWindow = new google.maps.InfoWindow({maxWidth: 300});
 
-      //adds animation if you click the marker
-
-      function toggleBounce() {
-        if (marker.getAnimation() !== null) {
-          marker.setAnimation(null);
-        } else {
-          marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
-      }
-
-      infowindow = new google.maps.InfoWindow({maxWidth: 300});
-      //put in data from songkick marker function here
-      getConcerts('New York, NY');
-      //calls the loadmarker function inputting the concertLocations array
-      //console.log('Current concerts!!');
-      //console.log(currentConcerts[1]);
-      //addmapmarkers not working
-      //mapMarkers(self.currentConcerts());
-      mapMarkers(self.currentConcerts());
+    //put in data from songkick marker function here
+    getConcerts('New York, NY');
+    //calls the loadmarker function inputting the concertLocations array
+    //console.log('Current concerts!!');
+    //console.log(currentConcerts[1]);
+    //addmapmarkers not working
+    //mapMarkers(self.currentConcerts());
+    mapMarkers(self.currentConcerts());
   }
 
   //uses SongKick API to grab concerts
@@ -103,25 +81,21 @@ function appViewModel() {
         var concerts = data.resultsPage.results.event;
         var len = concerts.length;
         console.log('len: ' + len);
-        //var concertLoc = data.resultsPage.results.event.location;
-        //console.log(data.resultsPage.results.event.Object.location);
-        //console.log(data.resultsPage.results.event[1]);
-        //console.log(data.resultsPage.results.event[1].displayName);
-        //console.log(data.resultsPage.results.event[1].location);
-        console.log('Number of concerts: ' + len);
+
         for (var i = 0; i < len; i++) {
           var concertElem = data.resultsPage.results;
-        //  var concertVenue = concertElem.event[i].venue;
+          var concertVenue = concertElem.event[i].venue;
           var artist = concertElem.event[i].displayName;
           //console.log('artist: ' + artist);
           var url = concertElem.event[i].uri;
           //console.log('url: ' + url);
 
-          venueLat = concertElem.event[i].venue.lat;
+          //venueLat = concertElem.event[i].venue.lat;
+          venueLat = concertVenue.lat;
           //console.log('lat: ' + concertVenue.lat);
-          venueLng = concertElem.event[i].venue.lng;
+          venueLng = concertVenue.lng;
           //console.log('lon: ' + concertVenue.lng);
-          venueName = concertElem.event[i].displayName;
+          venueName = concertVenue.displayName;
           //console.log('name: ' + concertVenue.displayName);
 
 
@@ -170,12 +144,14 @@ function appViewModel() {
       var marker = new google.maps.Marker({
         position: geoLoc,
         title: thisArtist,
+        animation: google.maps.Animation.DROP,
         map: map
       });
 
+      //concert info popup on marker
       google.maps.event.addListener(marker, 'click', function() {
-         infowindow.setContent(contentString);
-         infowindow.open(map, marker);
+         infoWindow.setContent(contentString);
+         infoWindow.open(map, marker);
        });
     });
   }

@@ -19,5 +19,5 @@ html, body {
 }
 
 #info-window {
-  
+  max-width: 200px;
 }
