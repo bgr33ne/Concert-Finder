@@ -8,24 +8,37 @@ function appViewModel() {
   //pushing data from songkick into this array
   this.currentConcerts = ko.observableArray([]);
 
-  //testing with currentConcerts not being knockout
-  //var currentConcerts = [];
+  //adding data from meetup api
+  this.currentMeetups = ko.observableArray([]);
 
   //holds all mapmarkers
   //this.mapMarkers = ko.observableArray([]);
 
   //binding for search input, status and location
-  this.searchStatus = ko.observable();
+  this.searchBar = ko.observable();
   this.searchLocation = ko.observable('New York, NY');
 
   //holds lat + lng for switching cities
   this.currentLat = ko.observable(40.765353);
   this.currentLng = ko.observable(-73.979924);
 
+  //toggle value for list view
+  this.toggleVal = ko.observable('hide');
+
+
+  //opens list view when button is clicked
+  this.toggleList = function() {
+    if(self.toggleVal() === 'hide') {
+      self.toggleVal('show');
+    } else {
+      self.toggleVal('hide');
+    }
+  };
+
 
   //map error handling
   this.mapRequestTimeout = setTimeout(function() {
-    $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
+  $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
   }, 8000);
 
   function initMap() {
@@ -58,12 +71,8 @@ function appViewModel() {
 
     //put in data from songkick marker function here
     getConcerts('New York, NY');
-    //calls the loadmarker function inputting the concertLocations array
-    //console.log('Current concerts!!');
-    //console.log(currentConcerts[1]);
-    //addmapmarkers not working
+
     //mapMarkers(self.currentConcerts());
-    mapMarkers(self.currentConcerts());
   }
 
   //uses SongKick API to grab concerts
@@ -136,8 +145,7 @@ function appViewModel() {
       console.log('artist: ' + thisArtist);
 
       var contentString = '<div id="info-window">' +
-        '<h4>' + value.concertArtist + '</h4>' +
-        '<p>all the magical info about this artist' + '</p>'
+        '<h4>' + value.concertArtist + '</h4>'
          + '<a href="' + value.concertUrl + '"">More info' +
          '</a>' + '</div>';
 
@@ -148,11 +156,23 @@ function appViewModel() {
         map: map
       });
 
-      //concert info popup on marker
+      //concert event listener, opens popup and bounces the marker
       google.maps.event.addListener(marker, 'click', function() {
          infoWindow.setContent(contentString);
          infoWindow.open(map, marker);
+         toggleBounce();
        });
+
+      //function to bounce the marker
+      function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+          //limits the bounce to one time immediately after click
+          setTimeout(function(){ marker.setAnimation(null); }, 750);
+        }
+      }
     });
   }
   initMap();
