@@ -4,6 +4,8 @@ function appViewModel() {
   var map, city, infoWindow;
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
+  //api for meetup
+  var meetupApi = '6f12f4a77127e41662e1252547a3933';
 
   //pushing data from songkick into this array
   this.currentConcerts = ko.observableArray([]);
@@ -74,6 +76,13 @@ function appViewModel() {
 
     //mapMarkers(self.currentConcerts());
   }
+
+  //grabs data from meetup apikey
+  function getMeetups(location) {
+    var meetupUrl = ''
+
+  }
+
 
   //uses SongKick API to grab concerts
   function getConcerts(location) {
