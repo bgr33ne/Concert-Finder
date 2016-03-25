@@ -19,9 +19,9 @@ function ViewModel() {
   this.searchBar = ko.observable();
   this.searchLocation = ko.observable('New York, NY');
   //holds value from search
-  this.searchList = ko.observable([]);
+  this.searchList = ko.observableArray([]);
 
-  //holds lat + lng for switching cities
+  //holds lat + lng for switching cities , switching not currently implemented
   this.currentLat = ko.observable(40.765353);
   this.currentLng = ko.observable(-73.979924);
 
@@ -47,20 +47,23 @@ function ViewModel() {
     console.log('search started!!!');
     var searchElem = self.searchBar().toLowerCase();
     console.log('search elem: ' + searchElem);
-    var array = self.mapMarkerList();
-    if (!searchElem) {
-      return;
+    var array = self.currentConcerts();
+    //var array = self.mapMarkerList();
+    if (!searchElem || searchElem === 'all') {
+      //if empty search it researches inside the city and loads all events
+      getConcerts();
     } else {
       //clear search array before starting
       self.searchList([]);
 
       //loop through array to find search results
       for (i=0; i < array.length; i++) {
-        if (array[i].marker.title.toLowerCase().indexOf(searchElem) != -1) {
+        if (array[i].concertArtist.toLowerCase().indexOf(searchElem) != -1) {
           console.log('wow');
           //self.mapMarkerList()[i].marker.setMap(map);
-          self.searchList().push(array[i]);
           self.mapMarkerList()[i].marker.setMap(map);
+          self.searchList.push(array[i]);
+          console.log('currentConcert listing' + array[i].concertArtist);
         } else {
           //no search found clears map
           console.log("shit");
@@ -166,17 +169,16 @@ function ViewModel() {
           });
         }
         console.log('currentconcerts object: ' + self.currentConcerts());
+        //this will load data into the list view and can later be changed with search
+        self.searchList(self.currentConcerts());
+        //loads first mapmarkers.
         mapMarkers(self.currentConcerts());
-        //mapMarkers(currentConcerts);
-
       }
-      //clearTimeout(wikiRequestTimeout);
+
     });
   }
 
   //creates loads map markers and info windows on the mapfrom API
-  //need to replace conertlat concert lon with values from jsonp songkick
-  //currently having an issue with value
   function mapMarkers(array) {
     arrayVal = array[0];
     len = array.length;
