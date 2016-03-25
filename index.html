@@ -11,7 +11,7 @@
   <div ="container-fluid">
     <div class="row-fluid">
       <div class="col-xs-8 col-sm-6 col-md-6">
-        <form id="form-container" class="form-container">
+        <form id="form-container" class="form-container" data-bind="submit: searchResults">
         <label for="search"></label><input type="text" id="search" placeholder="Search" data-bind="value: searchBar, valueUpdate: 'keyup'" autocomplete="off">
         </form>
       </div>

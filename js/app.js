@@ -6,19 +6,20 @@ function ViewModel() {
   var songkickApi = 'KrsaEhuwC3Y3T21B';
   //api for meetup not in use currently
   //var meetupApi = '6f12f4a77127e41662e1252547a3933';
+  //adding data from meetup api not in use
+  //this.currentMeetups = ko.observableArray([]);
 
   //pushing data from songkick into this array
   this.currentConcerts = ko.observableArray([]);
 
-  //adding data from meetup api
-  this.currentMeetups = ko.observableArray([]);
-
-  //holds all mapmarkers
+  //holds mapmarkers
   this.mapMarkerList = ko.observableArray([]);
 
   //binding for search input, status and location
   this.searchBar = ko.observable();
   this.searchLocation = ko.observable('New York, NY');
+  //holds value from search
+  this.searchList = ko.observable([]);
 
   //holds lat + lng for switching cities
   this.currentLat = ko.observable(40.765353);
@@ -39,6 +40,30 @@ function ViewModel() {
       }
     }
   };
+
+  //adding search functionaliy here
+  this.searchResults = function() {
+    console.log('search started!!!')
+    var searchElem = self.searchBar().toLowerCase();
+    var array = self.currentConcerts;
+    if (!searchElem) {
+      console.log("yeah");
+      return;
+    } else {
+      //clear search array before starting
+      self.searchList([]);
+      //loop through array to find search results
+      for (i=0; i < array.length; i++) {
+        if (array[i].artist.toLowerCase().indexOf(searchElem) != -1) {
+          self.mapMarkerList()[i].marker.setMap(map);
+          self.searchList.push(array[i]);
+        } else {
+          console.log("shit");
+        }
+      }
+    }
+  }
+
 
   //opens list view when button is clicked
   this.toggleList = function() {
