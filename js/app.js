@@ -42,28 +42,34 @@ function ViewModel() {
   };
 
   //adding search functionaliy here
+  //search works but doesn't draw markers correctly
   this.searchResults = function() {
-    console.log('search started!!!')
+    console.log('search started!!!');
     var searchElem = self.searchBar().toLowerCase();
-    var array = self.currentConcerts;
+    console.log('search elem: ' + searchElem);
+    var array = self.mapMarkerList();
     if (!searchElem) {
-      console.log("yeah");
       return;
     } else {
       //clear search array before starting
       self.searchList([]);
+
       //loop through array to find search results
       for (i=0; i < array.length; i++) {
-        if (array[i].artist.toLowerCase().indexOf(searchElem) != -1) {
+        if (array[i].marker.title.toLowerCase().indexOf(searchElem) != -1) {
+          console.log('wow');
+          //self.mapMarkerList()[i].marker.setMap(map);
+          self.searchList().push(array[i]);
           self.mapMarkerList()[i].marker.setMap(map);
-          self.searchList.push(array[i]);
         } else {
+          //no search found clears map
           console.log("shit");
+          self.mapMarkerList()[i].marker.setMap(null);
         }
       }
+      //mapMarkerList(self.searchList());
     }
-  }
-
+  };
 
   //opens list view when button is clicked
   this.toggleList = function() {
