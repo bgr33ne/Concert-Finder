@@ -1,11 +1,11 @@
-function appViewModel() {
+function ViewModel() {
 
   var self = this;
   var map, city, infoWindow;
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
-  //api for meetup
-  var meetupApi = '6f12f4a77127e41662e1252547a3933';
+  //api for meetup not in use currently
+  //var meetupApi = '6f12f4a77127e41662e1252547a3933';
 
   //pushing data from songkick into this array
   this.currentConcerts = ko.observableArray([]);
@@ -14,7 +14,7 @@ function appViewModel() {
   this.currentMeetups = ko.observableArray([]);
 
   //holds all mapmarkers
-  //this.mapMarkers = ko.observableArray([]);
+  this.mapMarkerList = ko.observableArray([]);
 
   //binding for search input, status and location
   this.searchBar = ko.observable();
@@ -27,6 +27,18 @@ function appViewModel() {
   //toggle value for list view
   this.toggleVal = ko.observable('hide');
 
+  //When a deal on the list is clicked, go to corresponding marker and open its info window.
+  this.findMarker = function(clickedConcert) {
+    var clickedConcertName = clickedConcert.concertArtist;
+    console.log('CONCERT CLICKED!!! ' + clickedConcertName);
+    for (var key in self.mapMarkerList()) {
+      if (clickedConcertName === self.mapMarkerList()[key].marker.title) {
+        map.panTo(self.mapMarkerList()[key].marker.position);
+        infoWindow.setContent(self.mapMarkerList()[key].content);
+        infoWindow.open(map, self.mapMarkerList()[key].marker);
+      }
+    }
+  };
 
   //opens list view when button is clicked
   this.toggleList = function() {
@@ -44,6 +56,8 @@ function appViewModel() {
   $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
   }, 8000);
 
+
+  //initializes map and canvas, populates with info from api with getconcerts function call
   function initMap() {
     lat = self.currentLat();
     lng = self.currentLng();
@@ -119,7 +133,7 @@ function appViewModel() {
             concertArtist: artist,
             concertUrl: url
           });
-        };
+        }
         console.log('currentconcerts object: ' + self.currentConcerts());
         mapMarkers(self.currentConcerts());
         //mapMarkers(currentConcerts);
@@ -148,9 +162,9 @@ function appViewModel() {
       //console.log('artist: ' + thisArtist);
 
       var contentString = '<div id="info-window">' +
-        '<h4>' + value.concertArtist + '</h4>'
-         + '<a href="' + value.concertUrl + '"">More info' +
-         '</a>' + '</div>';
+        '<h4>' + value.concertArtist + '</h4>' +
+        '<a href="' + value.concertUrl + '"">More info' +
+        '</a>' + '</div>';
 
       var marker = new google.maps.Marker({
         position: geoLoc,
@@ -158,6 +172,12 @@ function appViewModel() {
         //animation causes a flicker
         animation: google.maps.Animation.DROP,
         map: map
+      });
+
+      //this is used to grab data from list view
+      self.mapMarkerList.push( {
+        marker: marker,
+        content: contentString
       });
 
       //concert event listener, opens popup and bounces the marker
@@ -182,4 +202,4 @@ function appViewModel() {
   initMap();
 }
 
-ko.applyBindings(new appViewModel());
+ko.applyBindings(new ViewModel());
