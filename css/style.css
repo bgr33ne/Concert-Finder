@@ -6,18 +6,41 @@ html, body {
 
 #map-canvas {
   height: 93vh;
-  width: 100%
+  width: 100%;
   position: relative;
+  overflow: hidden;
 }
 
 #form-container {
-
+  position: absolute;
+  top: 10px;
+  left: 25px;
+  z-index: 99;
+  overflow: hidden; //keeps div from scrolling
 }
 
-#list-view {
+#list-view-btn {
 
 }
 
 #info-window {
   max-width: 200px;
+}
+
+#concert-list-container {
+  height: 600px;
+  overflow: auto;
+  padding-bottom: 30px;
+}
+
+#concert-list {
+  padding: 0;
+  max-height: 250;
+  max-width: 200;
+  list-style-type: none;
+  list-style-position:inside
+  margin: 0;
+  text-align: left;
+  border-bottom: 1px solid #000000;
+  overflow: auto;
 }

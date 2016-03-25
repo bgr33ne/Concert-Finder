@@ -30,6 +30,7 @@ function appViewModel() {
 
   //opens list view when button is clicked
   this.toggleList = function() {
+    console.log('toggleList called!');
     if(self.toggleVal() === 'hide') {
       self.toggleVal('show');
     } else {
@@ -76,13 +77,6 @@ function appViewModel() {
 
     //mapMarkers(self.currentConcerts());
   }
-
-  //grabs data from meetup apikey
-  function getMeetups(location) {
-    var meetupUrl = ''
-
-  }
-
 
   //uses SongKick API to grab concerts
   function getConcerts(location) {
@@ -146,12 +140,12 @@ function appViewModel() {
 
     $.each(array, function(index, value) {
       var lat = value.concertLat;
-      console.log('Lat:' + lat);
+      //console.log('Lat:' + lat);
       var lon = value.concertLng;
-      console.log('lng: ' + lon);
+      //console.log('lng: ' + lon);
       var geoLoc = new google.maps.LatLng(lat, lon);
       var thisArtist = value.concertArtist;
-      console.log('artist: ' + thisArtist);
+      //console.log('artist: ' + thisArtist);
 
       var contentString = '<div id="info-window">' +
         '<h4>' + value.concertArtist + '</h4>'
@@ -161,6 +155,7 @@ function appViewModel() {
       var marker = new google.maps.Marker({
         position: geoLoc,
         title: thisArtist,
+        //animation causes a flicker
         animation: google.maps.Animation.DROP,
         map: map
       });
