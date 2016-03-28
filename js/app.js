@@ -171,7 +171,10 @@ function ViewModel() {
         //loads first mapmarkers.
         mapMarkers(self.currentConcerts());
       }
-
+    })
+    //error handling
+    .fail(function() {
+      alert( "error loading SongKick API" );
     });
   }
 
