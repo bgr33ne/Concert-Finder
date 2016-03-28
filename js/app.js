@@ -87,9 +87,8 @@ function ViewModel() {
 
   //map error handling
   this.mapRequestTimeout = setTimeout(function() {
-  $('#map-canvas').html('We had trouble loading Google Maps. Please refresh your browser and try again.');
-  }, 8000);
-
+    alert('Error loading Google Maps.');
+  });
 
   //initializes map and canvas, populates with info from api with getconcerts function call
   function initMap() {
