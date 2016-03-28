@@ -5,7 +5,6 @@ function ViewModel() {
   //api for songkick
   var songkickApi = 'KrsaEhuwC3Y3T21B';
   //api for meetup not in use currently
-  //var meetupApi = '6f12f4a77127e41662e1252547a3933';
   //adding data from meetup api not in use
   //this.currentMeetups = ko.observableArray([]);
 
@@ -37,18 +36,12 @@ function ViewModel() {
         map.panTo(self.mapMarkerList()[key].marker.position);
         infoWindow.setContent(self.mapMarkerList()[key].content);
         infoWindow.open(map, self.mapMarkerList()[key].marker);
-        //adding animation to marker not working
-        map.toggleBounce(self.mapMarkerList()[key].marker.position);
-      }
-    }
-    //function to bounce the marker
-    function toggleBounce() {
-      if (marker.getAnimation() !== null) {
-        marker.setAnimation(null);
-      } else {
-        marker.setAnimation(google.maps.Animation.BOUNCE);
+
+        //adds bounce animation to marker
+        self.mapMarkerList()[key].marker.setAnimation(google.maps.Animation.BOUNCE);
         //limits the bounce to one time immediately after click
-        setTimeout(function(){ marker.setAnimation(null); }, 750);
+        //NOT WORKING
+        setTimeout(function(){ self.mapMarkerList()[key].marker.setAnimation(null); }, 750);
       }
     }
   };
@@ -61,28 +54,23 @@ function ViewModel() {
     console.log('search elem: ' + searchElem);
     var array = self.currentConcerts();
     //var array = self.mapMarkerList();
-    if (!searchElem || searchElem === 'all') {
-      //if empty search it researches inside the city and loads all events
-      getConcerts();
-    } else {
-      //clear search array before starting
-      self.searchList([]);
 
-      //loop through array to find search results
-      for (i=0; i < array.length; i++) {
-        if (array[i].concertArtist.toLowerCase().indexOf(searchElem) != -1) {
-          console.log('wow');
-          //self.mapMarkerList()[i].marker.setMap(map);
-          self.mapMarkerList()[i].marker.setMap(map);
-          self.searchList.push(array[i]);
-          console.log('currentConcert listing' + array[i].concertArtist);
-        } else {
-          //no search found clears map
-          console.log("shit");
-          self.mapMarkerList()[i].marker.setMap(null);
-        }
+    //clear search array before starting
+    self.searchList([]);
+
+    //loop through array to find search results
+    for (i=0; i < array.length; i++) {
+      if (array[i].concertArtist.toLowerCase().indexOf(searchElem) != -1) {
+        console.log('wow');
+        //self.mapMarkerList()[i].marker.setMap(map);
+        self.mapMarkerList()[i].marker.setMap(map);
+        self.searchList.push(array[i]);
+        console.log('currentConcert listing' + array[i].concertArtist);
+      } else {
+        //no search found clears map
+        console.log("shit");
+        self.mapMarkerList()[i].marker.setMap(null);
       }
-      //mapMarkerList(self.searchList());
     }
   };
 
