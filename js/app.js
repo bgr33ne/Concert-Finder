@@ -37,6 +37,18 @@ function ViewModel() {
         map.panTo(self.mapMarkerList()[key].marker.position);
         infoWindow.setContent(self.mapMarkerList()[key].content);
         infoWindow.open(map, self.mapMarkerList()[key].marker);
+        //adding animation to marker not working
+        map.toggleBounce(self.mapMarkerList()[key].marker.position);
+      }
+    }
+    //function to bounce the marker
+    function toggleBounce() {
+      if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+      } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        //limits the bounce to one time immediately after click
+        setTimeout(function(){ marker.setAnimation(null); }, 750);
       }
     }
   };
@@ -232,9 +244,10 @@ function ViewModel() {
   initMap();
 }
 
-ko.applyBindings(new ViewModel());
+//removed this function call and replaced with loadmap
+//ko.applyBindings(new ViewModel());
 
-//adding a function to fix the async defer error with google maps script call
-function loadMap() {
+//added a function to fix the async defer error with google maps script call
+function loadApp() {
   ko.applyBindings(new ViewModel());
 }
