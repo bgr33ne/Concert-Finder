@@ -128,7 +128,7 @@ function ViewModel() {
 
   //uses SongKick API to grab concerts
   function getConcerts(location) {
-  //need to add lat + lon passed through the search function and inputted into songKickUrl
+  //need to add lat + lon passed through the search function and inputted into songKickUrl for location search, currently not implemented
   var songKickUrl = 'http://api.songkick.com/api/3.0/events.json?apikey=' + songkickApi + '&location=geo:' + 40.765353 + ',' + -73.979924 +  '&jsoncallback=?';
   //need to add link back to display name on main map
 
@@ -149,15 +149,12 @@ function ViewModel() {
           //console.log('artist: ' + artist);
           var url = concertElem.event[i].uri;
           //console.log('url: ' + url);
-
-          //venueLat = concertElem.event[i].venue.lat;
           venueLat = concertVenue.lat;
           //console.log('lat: ' + concertVenue.lat);
           venueLng = concertVenue.lng;
           //console.log('lon: ' + concertVenue.lng);
           venueName = concertVenue.displayName;
           //console.log('name: ' + concertVenue.displayName);
-
 
           self.currentConcerts.push({
           //these values passed into concertLocations array
@@ -236,3 +233,8 @@ function ViewModel() {
 }
 
 ko.applyBindings(new ViewModel());
+
+//adding a function to fix the async defer error with google maps script call
+function loadMap() {
+  ko.applyBindings(new ViewModel());
+}
