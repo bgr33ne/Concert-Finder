@@ -38,10 +38,7 @@ function ViewModel() {
         infoWindow.open(map, self.mapMarkerList()[key].marker);
 
         //adds bounce animation to marker
-        self.mapMarkerList()[key].marker.setAnimation(google.maps.Animation.BOUNCE);
-        //limits the bounce to one time immediately after click
-        //NOT WORKING
-        setTimeout(function(){ self.mapMarkerList()[key].marker.setAnimation(null); }, 750);
+        google.maps.event.trigger(self.mapMarkerList()[key].marker, 'click');
       }
     }
   };
