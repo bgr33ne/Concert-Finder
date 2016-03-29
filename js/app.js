@@ -240,6 +240,6 @@ function loadApp() {
 }
 
 //error handling function for google map
-function goggleError() {
+function googleError() {
   alert('Google Maps Load Error');
 }
