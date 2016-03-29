@@ -238,3 +238,8 @@ function ViewModel() {
 function loadApp() {
   ko.applyBindings(new ViewModel());
 }
+
+//error handling function for google map
+function goggleError() {
+  alert('Google Maps Load Error');
+}
