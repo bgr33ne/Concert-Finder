@@ -22,7 +22,9 @@
     </div>
     <div class="col-xs-4 col-sm-4 col-md-4">
       <h4 class="location">Live Music - NYC - Hoy</h4>
+
       <button id="list-view-btn" data-bind="click: toggleList">Click for List</button>
+      <img id="attribution" src="/Users/bgreene/Desktop/Udacity/Concert Finder/Attribution_elements/concerts by songkick.png">
       <div id="concert-list-container">
         <ul id="concert-list" data-bind="visible: toggleVal() != 'hide', foreach: searchList">
           <li id="concert-list-item" data-bind="click: $parent.findMarker" >
