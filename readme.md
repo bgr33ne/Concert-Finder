@@ -1,4 +1,4 @@
-## Website Performance Optimization portfolio project
+## NYC Concert List
 
 Hi, welcome to my README for my NYC current concert search web app integrating Google Maps and SongKick API's
 
