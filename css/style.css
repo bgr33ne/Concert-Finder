@@ -55,3 +55,7 @@ html, body {
   text-align: left;
   border-bottom: 1px solid #000000;
 }
+
+#attribution {
+  max-height: 35px;
+}
