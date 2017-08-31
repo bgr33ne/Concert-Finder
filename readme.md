@@ -23,4 +23,4 @@ The app loads current concert information with locations for concerts in NYC.
 
   View project:
 
-  [Brian Greene Concert Finder](http://bgr33ne.github.io/Concert-Finder/)
+  [Launch NYC Concert List](http://bgr33ne.github.io/Concert-Finder/)
