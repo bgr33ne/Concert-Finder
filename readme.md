@@ -21,6 +21,4 @@ The app loads current concert information with locations for concerts in NYC.
   Inside each infowindow at the concert marker you can click the more info link to go to the relevant SongKick page.
   There you can find out about tickets, as well as more in-depth info on the event.
 
-  View project:
-
   [Launch NYC Concert List](http://bgr33ne.github.io/Concert-Finder/)
